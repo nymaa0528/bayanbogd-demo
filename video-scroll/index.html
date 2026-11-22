@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Баян Богд Супер Маркет — Даланзадгад</title>
+<meta name="description" content="Баян Богд Супер Маркет — Даланзадгад хот, Баруун сайхан 20:20 тоот. Өдөр бүр 09:00–23:00. Утас 8880 0515.">
+<link rel="icon" href="../assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap">
+<style>
+  :root{
+    --accent:#1E4FB4;      /* дэлгүүрийн хаан цэнхэр */
+    --ink:#0B1A3D;         /* хар хөх */
+    --soft:#4A5675;
+    --tint:#EEF3FB;
+    --line:#DCE4F2;
+  }
+  body{margin:0;background:#DCE8F7}
+  a{color:var(--accent)}a:hover{color:var(--ink)}
+
+  .root{position:relative;height:7000px;font-family:Manrope,system-ui,sans-serif;color:var(--ink);background:#DCE8F7}
+  .anchor{position:absolute;height:1px;width:1px}
+  .stage{position:sticky;top:0;height:100vh;overflow:hidden;background:#0B1A3D url(assets/poster.jpg) center/cover no-repeat}
+  .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .shade{position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(5,12,32,.18) 0%,rgba(5,12,32,0) 18%,rgba(5,12,32,0) 85%,rgba(5,12,32,.18) 100%)}
+  .loading{position:absolute;left:16px;bottom:72px;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.92);font-size:13px;font-weight:600;color:var(--ink)}
+  .loading[hidden]{display:none}
+
+  header{position:absolute;top:0;left:0;right:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px max(16px,3vw);box-sizing:border-box}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);background:#fff;padding:6px 18px 6px 6px;border-radius:999px;box-shadow:0 2px 10px rgba(11,26,61,.1)}
+  .brand img{width:38px;height:38px;display:block}
+  .brand span{font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:15px;line-height:1.05}
+  .brand small{display:block;font-family:Manrope,sans-serif;font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--soft)}
+  .menu{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#fff;padding:6px;border-radius:999px;box-shadow:0 2px 10px rgba(11,26,61,.1)}
+  .menu a{padding:10px 14px;border-radius:999px;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px}
+  .menu a.cta{padding:10px 18px;color:#fff;background:var(--accent);font-weight:700}
+
+  .card{position:absolute;top:108px;right:max(16px,5vw);width:min(500px,calc(100% - 32px));box-sizing:border-box;padding:32px;background:#fff;border-radius:24px;box-shadow:0 12px 40px rgba(11,26,61,.14);opacity:0;visibility:hidden}
+  .eyebrow{margin:0 0 12px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .card h1{margin:0 0 14px;font-family:Unbounded,Manrope,sans-serif;font-size:clamp(28px,3.4vw,44px);line-height:1.1;font-weight:700}
+  .card h2{margin:0 0 18px;font-family:Unbounded,Manrope,sans-serif;font-size:clamp(24px,2.6vw,34px);line-height:1.15}
+  .lead{margin:0 0 24px;font-size:17px;line-height:1.55;color:var(--soft)}
+  .btns{display:flex;flex-wrap:wrap;gap:10px}
+  .btn{display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;text-decoration:none;font-weight:700;background:var(--tint);color:var(--ink)}
+  .btn.primary{background:var(--accent);color:#fff}
+  .hint{margin:22px 0 0;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--soft)}
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .stats>div{background:var(--tint);border-radius:16px;padding:16px}
+  .stats b{display:block;font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:17px}
+  .stats span{display:block;margin-top:6px;font-size:14px;color:var(--soft)}
+  .cats{display:flex;flex-direction:column;gap:10px}
+  .cat{display:flex;align-items:center;gap:14px;padding:12px;border-radius:14px;background:#fff;transition:background .25s}
+  .cat i{width:14px;height:14px;border-radius:50%;flex:none}
+  .cat b{display:block;font-weight:700}
+  .cat small{display:block;font-size:14px;color:var(--soft)}
+  .promo{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:var(--tint);font-weight:700;margin-bottom:12px}
+  .promo b{font-family:Unbounded,Manrope,sans-serif;color:var(--accent);font-size:20px}
+  .paid{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:#E3F4E9;color:#14532d;font-weight:700;opacity:.15}
+  .rows{display:grid;gap:10px;margin-bottom:20px}
+  .rows>div{display:flex;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .rows>div:last-child{padding-bottom:0;border-bottom:0}
+  .rows span:first-child{color:var(--soft)}
+  .rows span:last-child{font-weight:700;text-align:right}
+  .status{display:inline-flex;align-items:center;gap:8px;margin:-6px 0 18px;font-size:14px;font-weight:700;color:#1f7a43}
+  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px rgba(47,174,91,.18)}
+  .status.closed{color:#C2410C}
+  .status.closed::before{box-shadow:0 0 0 4px rgba(238,90,36,.18)}
+
+  /* явцын цэгүүд */
+  .progress{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 4px 16px rgba(11,26,61,.12)}
+  .progress span{width:8px;height:8px;border-radius:999px;background:#C5D0E4;transition:all .3s}
+  .progress span.done{background:var(--accent)}
+  .progress span.now{width:26px;background:var(--accent)}
+
+  @media (max-width:720px){
+    .menu a:not(.cta){display:none}
+    .card{top:auto;bottom:64px;padding:22px}
+    .lead{font-size:15px;margin-bottom:16px}
+  }
+</style>
+</head>
+<body>
+<div class="root" id="root">
+  <div class="anchor" id="ch-welcome" style="top:980px"></div>
+  <div class="anchor" id="ch-aisles" style="top:1950px"></div>
+  <div class="anchor" id="ch-checkout" style="top:4800px"></div>
+  <div class="anchor" id="ch-contact" style="top:6200px"></div>
+
+  <div class="stage">
+    <canvas id="frames" aria-hidden="true"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <div class="loading" id="loading" role="status">Ачаалж байна…</div>
+
+    <header>
+      <a class="brand" href="#top">
+        <img src="../assets/logo.svg" alt="Азар Говь ХХК">
+        <span>Баян Богд<small>СУПЕР МАРКЕТ</small></span>
+      </a>
+      <nav class="menu" aria-label="Үндсэн цэс">
+        <a href="#ch-aisles">Бараа</a>
+        <a href="#ch-checkout">Касс</a>
+        <a href="#ch-contact">Байршил</a>
+        <a class="cta" href="tel:+97688800515">Залгах</a>
+      </nav>
+    </header>
+
+    <!-- data-from / data-to: scroll-ын явцын (0–1) аль хэсэгт карт харагдах -->
+    <section class="card" aria-label="Нүүр" data-from="-1" data-to="0.10">
+      <p class="eyebrow">Даланзадгад хот · Супер маркет</p>
+      <h1>Баян Богд Супер Маркет</h1>
+      <p class="lead">Хүнс, ахуйн бараа, шинэ жимс ногоо — өдөр тутмын хэрэгцээ нэг дор.</p>
+      <div class="btns">
+        <a class="btn primary" href="#ch-aisles">Дэлгүүр хэсэх</a>
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Чиглэл авах</a>
+      </div>
+      <p class="hint">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
+        Доош гүйлгээд дэлгүүрээр аялаарай</p>
+    </section>
+
+    <section class="card" aria-label="Тавтай морил" data-from="0.14" data-to="0.25">
+      <p class="eyebrow">Тавтай морил</p>
+      <h2 style="margin-bottom:20px">Нэг зогсоод бүгдийг</h2>
+      <div class="stats">
+        <div><b>09–23</b><span>Өдөр бүр нээлттэй</span></div>
+        <div><b>Эмийн сан</b><span>Дэлгүүрийн хажууд</span></div>
+        <div><b>Зогсоол</b><span>Өргөн талбайтай</span></div>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Бараа" data-from="0.27" data-to="0.64">
+      <p class="eyebrow">Бараа бүтээгдэхүүн</p>
+      <h2>Хэрэгтэй бүхэн нэг дор</h2>
+      <!-- data-f0 / data-f1: видеоны аль хэсэгт (0–1, нийт уртын хувь) энэ ангилал тодрох -->
+      <div class="cats">
+        <div class="cat" data-f0="0.19" data-f1="0.40"><i style="background:#D8402F"></i><div><b>Жимс, ногоо</b><small>Өдөр бүр шинэхэн</small></div></div>
+        <div class="cat" data-f0="0.40" data-f1="0.53"><i style="background:#C9873F"></i><div><b>Талх, нарийн боов</b><small>Шинэ жигнэсэн</small></div></div>
+        <div class="cat" data-f0="0.53" data-f1="0.65"><i style="background:#1E4FB4"></i><div><b>Сүү, цагаан идээ</b><small>Сүү, тараг, ааруул, цөцгий</small></div></div>
+        <div class="cat" data-f0="9" data-f1="9"><i style="background:#7A8AA8"></i><div><b>Хүнс, ахуйн бараа</b><small>Баасан гараг бүр шинэ бараа</small></div></div>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Касс" data-from="0.66" data-to="0.86">
+      <p class="eyebrow">Касс</p>
+      <h2 style="margin-bottom:14px">Хурдан, найрсаг үйлчилгээ</h2>
+      <div class="promo"><b>−15%</b><span>Шинэ ирсэн бараанд эхний 3 хоног — кассаар автоматаар тооцогдоно</span></div>
+      <div class="paid" id="paid">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M7.5 12.5l3 3 6-6"></path></svg>
+        Төлбөр амжилттай. Баярлалаа!</div>
+    </section>
+
+    <section class="card" aria-label="Холбоо барих" data-from="0.89" data-to="2">
+      <p class="eyebrow">Дахин ирээрэй</p>
+      <h2>Баярлалаа! Дараа уулзъя</h2>
+      <div class="rows">
+        <div><span>Хаяг</span><span>Даланзадгад хот, Баруун сайхан 20:20 тоот</span></div>
+        <div><span>Утас</span><span><a href="tel:+97688800515">8880 0515</a></span></div>
+        <div><span>Цагийн хуваарь</span><span>Өдөр бүр 09:00–23:00</span></div>
+      </div>
+      <span class="status" id="status"></span>
+      <div class="btns">
+        <a class="btn primary" href="https://www.google.com/maps/dir/?api=1&destination=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Чиглэл авах</a>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Газрын зураг</a>
+      </div>
+    </section>
+
+    <div class="progress" id="progress" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Видеог кадр бүрээр нь (WebP) canvas дээр зурна: <video>-ийн seek удаан, Safari дээр бүр гацдаг.
+  // frames/d — 1600px, 480 кадр; frames/m — 960px, 240 кадр (сондгой дугаарууд). Хоорондох кадрыг уусгаж зурна.
+  var small = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+  var SEQ = small ? { dir: 'frames/m/', count: 240, step: 2, cache: 28 } : { dir: 'frames/d/', count: 480, step: 1, cache: 24 };
+  function frameUrl(i) { return SEQ.dir + ('00' + (i * SEQ.step + 1)).slice(-3) + '.webp'; }
+  var N = SEQ.count;
+  var root = document.getElementById('root');
+  var canvas = document.getElementById('frames');
+  var ctx = canvas.getContext('2d');
+  var loading = document.getElementById('loading');
+  var paid = document.getElementById('paid');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var cats = Array.prototype.slice.call(document.querySelectorAll('.cat'));
+  var steps = Array.prototype.slice.call(document.querySelectorAll('#progress span'));
+
+  var cur = 0, target = 0, raf = 0, last = 0, drawn = '';
+
+  // --- Кадр ачаалах ---
+  // src[i]: шахагдсан эх (Blob, эсвэл file://-д Image). bmp: задалсан ImageBitmap-ууд — зөвхөн
+  // одоогийн байрлалын ойролцоох хэдэн ширхэгийг санах ойд барина (бүгдийг нь барих бол ~2GB).
+  var src = new Array(N), loaded = 0;
+  var bmp = new Map(), decoding = {}, inFlight = 0;
+
+  // Эхлээд 32 алхам тутмын кадрууд, дараа нь 16, 8 … гэж нягтруулна: хурдан гүйлгэсэн ч ойролцоо кадр бэлэн байна.
+  var order = [], seen = {};
+  for (var stride = 32; stride >= 1; stride >>= 1) {
+    for (var i = 0; i < N; i += stride) if (!seen[i]) { seen[i] = 1; order.push(i); }
+  }
+  if (!seen[N - 1]) order.splice(1, 0, N - 1);
+
+  function loadImg(i) {
+    return new Promise(function (ok, fail) {
+      var im = new Image();
+      im.onload = function () { ok(im); };
+      im.onerror = fail;
+      im.src = frameUrl(i);
+    });
+  }
+  function loadOne(i) {
+    // fetch → Blob нь createImageBitmap-аар thread-ийн гадна задлагдана. file://-д fetch ажиллахгүй тул Image ашиглана.
+    return fetch(frameUrl(i)).then(function (r) { if (!r.ok) throw 0; return r.blob(); })
+      .catch(function () { return loadImg(i); })
+      .then(function (s) {
+        src[i] = s; loaded++;
+        loading.textContent = 'Ачаалж байна… ' + Math.round(loaded / N * 100) + '%';
+        if (loaded === N) loading.hidden = true;
+        kick();
+      }, function () { loaded++; });
+  }
+  var q = 0;
+  function pump() { while (inFlight < 6 && q < order.length) { inFlight++; loadOne(order[q++]).then(function () { inFlight--; pump(); }); } }
+  pump();
+
+  function decode(i) {
+    if (i < 0 || i >= N || bmp.has(i) || decoding[i] || !src[i]) return;
+    decoding[i] = 1;
+    createImageBitmap(src[i]).then(function (b) {
+      decoding[i] = 0;
+      bmp.set(i, b);
+      // Одоогийн байрлалаас хамгийн хол байгааг суллана
+      var c = fracAt(cur) * (N - 1);
+      while (bmp.size > SEQ.cache) {
+        var far = -1, fd = -1;
+        bmp.forEach(function (_, k) { var d = Math.abs(k - c); if (d > fd) { fd = d; far = k; } });
+        bmp.get(far).close && bmp.get(far).close();
+        bmp.delete(far);
+      }
+      kick();
+    }, function () { decoding[i] = 0; });
+  }
+  // Хүссэн кадр задлагдаагүй бол хамгийн ойрын бэлэн кадрыг авна
+  function nearest(i) {
+    for (var d = 0; d < N; d++) {
+      if (bmp.has(i - d)) return i - d;
+      if (bmp.has(i + d)) return i + d;
+    }
+    return -1;
+  }
+
+  // --- Зурах ---
+  var cw = 0, ch = 0;
+  function sizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+    if (w !== cw || h !== ch) { canvas.width = cw = w; canvas.height = ch = h; drawn = ''; }
+  }
+  function cover(b) {   // object-fit: cover
+    var s = Math.max(cw / b.width, ch / b.height), w = b.width * s, h = b.height * s;
+    ctx.drawImage(b, (cw - w) / 2, (ch - h) / 2, w, h);
+  }
+  function draw(pos) {   // pos: 0 … N-1, бутархай хэсэг нь дараагийн кадр руу уусах хэмжээ
+    var i0 = Math.floor(pos), i1 = Math.min(i0 + 1, N - 1), t = pos - i0;
+    var dir = target >= cur ? 1 : -1;
+    for (var k = -2; k <= 8; k++) decode(i0 + k * dir);   // гүйлгэж буй зүг рүү урьдчилж задлана
+    var a = nearest(i0), b = bmp.has(i1) ? i1 : -1;
+    if (a < 0) return;
+    var key = a + ':' + (b > a ? b + ':' + t.toFixed(2) : '');
+    if (key === drawn) return;
+    drawn = key;
+    ctx.globalAlpha = 1;
+    cover(bmp.get(a));
+    if (b > a && t > 0.02) { ctx.globalAlpha = t; cover(bmp.get(b)); ctx.globalAlpha = 1; }
+  }
+
+  // Scroll-ын явц (0–1) → видеоны явц (0–1, нийт уртын хувь). Кадрын тоо ямар ч байсан ажиллана.
+  // Эхэнд нүүр карт харагдах хооронд видео зогсоно, төгсгөлд нь сүүлийн кадр дээр зогсоно.
+  var K = [[0, 0], [0.07, 0], [0.95, 1], [1, 1]];
+  function fracAt(p) {
+    for (var i = 1; i < K.length; i++) {
+      if (p <= K[i][0]) {
+        var a = K[i - 1], b = K[i];
+        return a[1] + (b[1] - a[1]) * ((p - a[0]) / (b[0] - a[0]));
+      }
+    }
+    return 1;
+  }
+  function clamp(x) { return Math.max(0, Math.min(1, x)); }
+
+  function measure() {
+    var vh = window.innerHeight || 900;
+    var r = root.getBoundingClientRect();
+    var total = r.height - vh;
+    target = clamp(total > 0 ? -r.top / total : 0);
+    kick();
+  }
+  function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
+
+  function render(p) {
+    var f = fracAt(p);
+    cards.forEach(function (c) {
+      var a = +c.dataset.from, b = +c.dataset.to;
+      var op = Math.min(clamp((p - a) / 0.03), clamp((b - p) / 0.03));
+      c.style.opacity = op.toFixed(3);
+      c.style.visibility = op > 0.01 ? 'visible' : 'hidden';
+      c.style.transform = 'translateY(' + ((1 - op) * 18).toFixed(1) + 'px)';
+    });
+    cats.forEach(function (c) {
+      c.style.background = f >= +c.dataset.f0 && f < +c.dataset.f1 ? '#EEF3FB' : '#FFFFFF';
+    });
+    paid.style.opacity = (0.15 + clamp((f - 0.81) / 0.03) * 0.85).toFixed(3);   // ≈16.3 сек: тор өгөх
+    var active = p < 0.12 ? 0 : p < 0.26 ? 1 : p < 0.65 ? 2 : p < 0.88 ? 3 : 4;
+    steps.forEach(function (s, i) {
+      s.classList.toggle('now', i === active);
+      s.classList.toggle('done', i < active);
+    });
+  }
+
+  function tick(now) {
+    raf = 0;
+    // Зөөлөн дагах — дэлгэцийн давтамжаас (60/120Hz) үл хамааран ижил хурдтай
+    var dt = last ? Math.min(now - last, 64) : 16;
+    last = now;
+    var d = target - cur;
+    cur = Math.abs(d) < 0.0002 ? target : cur + d * (1 - Math.exp(-dt / 110));
+    sizeCanvas();
+    draw(fracAt(cur) * (N - 1));   // кадр ачаалагдах/задлагдах бүрт kick() дахин дуудна
+    render(cur);
+    if (cur !== target) raf = requestAnimationFrame(tick);
+  }
+
+  // Нээлттэй эсэх — үргэлж Улаанбаатарын цагаар (09:00–23:00)
+  var statusEl = document.getElementById('status');
+  function openTick() {
+    var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Ulaanbaatar', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    var get = function (t) { return Number(parts.filter(function (x) { return x.type === t; })[0].value); };
+    var m = get('hour') * 60 + get('minute'), open = m >= 9 * 60 && m < 23 * 60;
+    statusEl.textContent = open ? 'Одоо нээлттэй · 23:00 хүртэл' : 'Одоо хаалттай · ' + (m < 9 * 60 ? '' : 'маргааш ') + '09:00-д нээгдэнэ';
+    statusEl.classList.toggle('closed', !open);
+  }
+  openTick(); setInterval(openTick, 60000);
+
+  window.addEventListener('scroll', measure, { passive: true });
+  window.addEventListener('resize', measure);
+  render(0);
+  measure();
+})();
+</script>
+</body>
+</html>

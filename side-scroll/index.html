@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Баян Богд Супер Маркет — Даланзадгад</title>
+<meta name="description" content="Баян Богд Супер Маркет — Даланзадгад хот, Баруун сайхан 20:20 тоот. Өдөр бүр 09:00–23:00. Утас 8880 0515.">
+<link rel="icon" href="../assets/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap">
+<style>
+  :root{
+    --accent:#1E4FB4; --ink:#0B1A3D; --soft:#4A5675; --tint:#EEF3FB; --line:#DCE4F2;
+    --sky:#9AD6EC;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--sky);font-family:Manrope,system-ui,sans-serif;color:var(--ink)}
+  a{color:var(--accent)}
+
+  .root{position:relative;height:1000vh}
+  .stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--sky)}
+
+  /* дэлгүүрийн урт зураг + эмэгтэй — нэг "ертөнц" дотор, камер хажуу тийш гулсана */
+  .world{position:absolute;left:0;top:0;height:100%;will-change:transform}
+  .world > img.store{display:block;height:100%;width:auto;user-select:none;-webkit-user-drag:none}
+  .woman{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform;pointer-events:none}
+  .parked{position:absolute;left:0;top:0;opacity:0;pointer-events:none}
+  .cashier{position:absolute;left:0;top:0;overflow:hidden;pointer-events:none}
+  .cashier img{position:absolute;top:0;left:0;opacity:0;transform:scaleX(-1)}
+  .beep{position:absolute;width:14px;height:14px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 18px 8px rgba(255,60,60,.55);opacity:0;pointer-events:none}
+  .woman img{position:absolute;left:0;top:0;display:block;will-change:transform,opacity}
+
+  /* гарт гарч ирэх бараа, сагс */
+  .fx{position:absolute;inset:0;pointer-events:none}
+  .item{position:absolute;left:0;top:0;width:64px;height:64px;object-fit:contain;transform-origin:50% 50%;opacity:0;will-change:transform,opacity;
+        filter:drop-shadow(0 6px 10px rgba(11,26,61,.25))}
+  .tray{position:absolute;left:max(16px,3vw);bottom:22px;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 16px;border-radius:999px;
+        background:rgba(255,255,255,.94);box-shadow:0 6px 20px rgba(11,26,61,.14);opacity:0;transition:opacity .3s}
+  .tray b{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-right:2px}
+  .slot{width:44px;height:44px;border-radius:12px;border:2px dashed #C5D0E4}
+
+  header{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px max(16px,3vw);z-index:5}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);background:#fff;padding:6px 18px 6px 6px;border-radius:999px;box-shadow:0 2px 10px rgba(11,26,61,.1)}
+  .brand img{width:38px;height:38px;display:block}
+  .brand span{font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:15px;line-height:1.05}
+  .brand small{display:block;font-family:Manrope,sans-serif;font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--soft)}
+  .menu{display:flex;align-items:center;gap:6px;background:#fff;padding:6px;border-radius:999px;box-shadow:0 2px 10px rgba(11,26,61,.1)}
+  .menu a{padding:10px 14px;border-radius:999px;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px}
+  .menu a.cta{padding:10px 18px;color:#fff;background:var(--accent);font-weight:700}
+
+  .card{position:absolute;top:96px;right:max(16px,4vw);width:min(440px,calc(100% - 32px));padding:28px;background:#fff;border-radius:24px;
+        box-shadow:0 12px 40px rgba(11,26,61,.16);opacity:0;visibility:hidden;z-index:4}
+  .eyebrow{margin:0 0 10px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+  .card h1{margin:0 0 12px;font-family:Unbounded,Manrope,sans-serif;font-size:clamp(26px,3vw,40px);line-height:1.1}
+  .card h2{margin:0 0 10px;font-family:Unbounded,Manrope,sans-serif;font-size:clamp(22px,2.3vw,30px);line-height:1.15}
+  .lead{margin:0 0 18px;font-size:16px;line-height:1.55;color:var(--soft)}
+  .card .lead:last-child{margin-bottom:0}
+  .btns{display:flex;flex-wrap:wrap;gap:10px}
+  .btn{display:inline-flex;align-items:center;min-height:46px;padding:0 20px;border-radius:999px;text-decoration:none;font-weight:700;background:var(--tint);color:var(--ink)}
+  .btn.primary{background:var(--accent);color:#fff}
+  .hint{margin:18px 0 0;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--soft)}
+  .promo{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--tint);font-weight:700;margin-bottom:10px}
+  .promo b{font-family:Unbounded,Manrope,sans-serif;color:var(--accent);font-size:20px}
+  .paid{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:#E3F4E9;color:#14532d;font-weight:700;opacity:.15}
+  .rows{display:grid;gap:9px;margin-bottom:16px}
+  .rows>div{display:flex;justify-content:space-between;gap:12px;padding-bottom:9px;border-bottom:1px solid var(--line)}
+  .rows>div:last-child{padding-bottom:0;border-bottom:0}
+  .rows span:first-child{color:var(--soft)}
+  .rows span:last-child{font-weight:700;text-align:right}
+  .status{display:inline-flex;align-items:center;gap:8px;margin:-4px 0 16px;font-size:14px;font-weight:700;color:#1f7a43}
+  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px rgba(47,174,91,.18)}
+  .status.closed{color:#C2410C}
+  .status.closed::before{box-shadow:0 0 0 4px rgba(238,90,36,.18)}
+
+  .progress{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;
+            background:rgba(255,255,255,.92);box-shadow:0 4px 16px rgba(11,26,61,.12);z-index:4}
+  .progress span{width:8px;height:8px;border-radius:999px;background:#C5D0E4;transition:all .3s}
+  .progress span.done{background:var(--accent)}
+  .progress span.now{width:26px;background:var(--accent)}
+
+  .loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--sky);z-index:9;font-weight:700;color:var(--ink);transition:opacity .4s}
+  .loading.done{opacity:0;pointer-events:none}
+
+  @media (max-width:760px){
+    .menu a:not(.cta){display:none}
+    .card{top:78px;left:12px;right:12px;width:auto;padding:18px 20px;border-radius:20px}
+    .card h1{font-size:24px}.card h2{font-size:20px}
+    .lead{font-size:14px;margin-bottom:12px}
+    .hint{display:none}
+    .progress{left:auto;right:16px;transform:none;bottom:28px}
+    .tray{bottom:24px;padding:6px 10px}
+    .tray b{display:none}
+    .slot{width:38px;height:38px}
+  }
+</style>
+</head>
+<body>
+<div class="root" id="root">
+  <div class="stage">
+    <div class="world" id="world">
+      <img class="store" id="store" src="assets/store-full.jpg" alt="Баян Богд Супер Маркетын дотор тал">
+      <img class="parked" id="parked" src="assets/sprites/cart.png" alt="" aria-hidden="true">
+      <div class="cashier" id="cashier" aria-hidden="true"><img data-pose="idle" src="assets/sprites/cashier-idle.png" alt=""><img data-pose="scan" src="assets/sprites/cashier-scan.png" alt=""><img data-pose="bags" src="assets/sprites/cashier-bags.png" alt=""><img data-pose="wave" src="assets/sprites/cashier-wave.png" alt=""></div>
+      <div class="woman" id="woman" aria-hidden="true"><img id="wCart" src="assets/reach/00.webp" alt=""><img id="wBags" src="assets/walk-bags/28.webp" alt="" style="opacity:0"></div>
+    </div>
+
+    <div class="fx" aria-hidden="true">
+      <div class="tray" id="tray" style="display:none"><b>Таны сагс</b><span class="slot"></span><span class="slot"></span><span class="slot"></span></div>
+      <span class="beep" id="beep"></span>
+      <img class="item" id="it-apples" src="assets/sprites/apples.png" alt="">
+      <img class="item" id="it-bread" src="assets/sprites/bread.png" alt="">
+      <img class="item" id="it-milk" src="assets/sprites/milk.png" alt="">
+      <img class="item" id="it-bag" src="assets/sprites/bag.png" alt="">
+    </div>
+
+    <header>
+      <a class="brand" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">
+        <img src="../assets/logo.svg" alt="Азар Говь ХХК">
+        <span>Баян Богд<small>СУПЕР МАРКЕТ</small></span>
+      </a>
+      <nav class="menu" aria-label="Үндсэн цэс">
+        <a href="#" data-go="0.14">Бараа</a>
+        <a href="#" data-go="0.70">Касс</a>
+        <a href="#" data-go="1">Байршил</a>
+        <a class="cta" href="tel:+97688800515">Залгах</a>
+      </nav>
+    </header>
+
+    <!-- data-from / data-to: scroll-ын явцын (0–1) аль хэсэгт карт харагдах -->
+    <section class="card" data-from="-1" data-to="0.06">
+      <p class="eyebrow">Даланзадгад хот · Супер маркет</p>
+      <h1>Баян Богд Супер Маркет</h1>
+      <p class="lead">Хүнс, ахуйн бараа, шинэ жимс ногоо — өдөр тутмын хэрэгцээ нэг дор.</p>
+      <div class="btns">
+        <a class="btn primary" href="#" data-go="0.14">Дэлгүүр хэсэх</a>
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Чиглэл авах</a>
+      </div>
+      <p class="hint">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
+        Доош гүйлгээд дэлгүүрээр аялаарай</p>
+    </section>
+
+    <section class="card" data-from="0.12" data-to="0.25">
+      <p class="eyebrow">Жимс, ногоо</p>
+      <h2>Өдөр бүр шинэхэн</h2>
+      <p class="lead">Шинэ ургацын алим, жимс, ногоо — өнгө өнгөөрөө.</p>
+    </section>
+
+    <section class="card" data-from="0.27" data-to="0.39">
+      <p class="eyebrow">Талх, нарийн боов</p>
+      <h2>Шинэ жигнэсэн</h2>
+      <p class="lead">Талх, боов, кекс — өглөө бүр шинээр ирнэ.</p>
+    </section>
+
+    <section class="card" data-from="0.42" data-to="0.56">
+      <p class="eyebrow">Сүү, цагаан идээ</p>
+      <h2>Сүү, тараг, цөцгий</h2>
+      <p class="lead">Баасан гараг бүр 10:00-д долоо хоногийн шинэ бараа нэг дор.</p>
+    </section>
+
+    <section class="card" data-from="0.59" data-to="0.82">
+      <p class="eyebrow">Касс</p>
+      <h2>Хурдан, найрсаг үйлчилгээ</h2>
+      <div class="promo"><b>−15%</b><span>Шинэ ирсэн бараанд эхний 3 хоног — кассаар автоматаар тооцогдоно</span></div>
+      <div class="paid" id="paid">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M7.5 12.5l3 3 6-6"></path></svg>
+        Төлбөр амжилттай. Баярлалаа!</div>
+    </section>
+
+    <section class="card" data-from="0.88" data-to="2">
+      <p class="eyebrow">Дахин ирээрэй</p>
+      <h2>Баярлалаа! Дараа уулзъя</h2>
+      <div class="rows">
+        <div><span>Хаяг</span><span>Даланзадгад хот, Баруун сайхан 20:20 тоот</span></div>
+        <div><span>Утас</span><span><a href="tel:+97688800515">8880 0515</a></span></div>
+        <div><span>Цагийн хуваарь</span><span>Өдөр бүр 09:00–23:00</span></div>
+      </div>
+      <span class="status" id="status"></span>
+      <div class="btns">
+        <a class="btn primary" href="https://www.google.com/maps/dir/?api=1&destination=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Чиглэл авах</a>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Газрын зураг</a>
+      </div>
+    </section>
+
+    <div class="progress" id="progress" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="loading" id="loading">Ачаалж байна…</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* ---------- Зургийн хэмжээ (store-full.jpg-ийн пикселээр) ---------- */
+  var IMG_W = 4682, IMG_H = 1093;
+  var FLOOR = 934;          // эмэгтэйн хөлийн ул байх шугам
+  var SPR_K = 0.42;         // эмэгтэйн зургийг дэлгүүрийн зурагтай харьцуулсан хэмжээ
+  var SPR_H = 845;
+  // Эмэгтэйн бүх хөдөлгөөн Gemini-ийн 2 видеоноос: ногоон дэвсгэрээс салгаж, кадр кадраар нь тоглуулна.
+  //   cart: тэрэгтэй (алхах 35 кадр + бараа авах 32 кадр), bags: тортой алхах 36 кадр
+  //   w,h = кадрын хэмжээ, headX = толгойн голын x, bottom = хөл/дугуйн доод ирмэг, k = видеоны px → дэлгүүрийн зургийн px
+  var VCART = { w: 500, h: 590, headX: 158, bottom: 578, k: 0.6246, walkN: 35, reachN: 32, stride: 7.4 };
+  var VBAGS = { w: 340, h: 605, headX: 164, bottom: 590, k: 0.612, n: 36, stride: 7.4, idle: 28 };
+  // бараа авах үеийн гарын байрлал (reach кадр бүрийн дугаараар, видеоны кадрын px) — бараа энэ гарыг дагана
+  var HANDPATH = { 8: [302, 75], 9: [296, 73], 10: [295, 72], 11: [307, 75], 12: [323, 87], 13: [338, 114], 14: [353, 147],
+                   15: [361, 186], 16: [362, 224], 17: [355, 261], 18: [344, 285], 19: [330, 303], 20: [325, 314], 21: [324, 326] };
+  // тэрэгний сагсанд бараа суух газар (видеоны кадрын px): x = голын байрлал, bottom = доод ирмэг, h = өндөр
+  var INCART = { 'it-apples': { x: 300, bottom: 392, h: 64, ar: 1.06 }, 'it-bread': { x: 358, bottom: 392, h: 58, ar: 1.25 }, 'it-milk': { x: 418, bottom: 392, h: 92, ar: 0.58 } };
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* ---------- Явц (0–1) → эмэгтэйн x байрлал (зургийн пикселээр) ---------- */
+  var PATH = [
+    [0.00, 560], [0.05, 560],     // хаалганы дэргэд тэрэгтэй
+    [0.16, 1000], [0.22, 1000],   // жимс ногоо — алим авна
+    [0.30, 1680], [0.36, 1680],   // талх
+    [0.46, 2380], [0.52, 2380],   // сүү
+    [0.62, 3500], [0.785, 3500],  // касс: тэрэгтэйгээ кассны хажууд ирнэ
+    [0.95, 4860], [1.00, 4860]    // тортой гарах хаалгаар гарч явна
+  ];
+  var STOPS = [ [0.16, 0.22, 'reach'], [0.30, 0.36, 'reach'], [0.46, 0.52, 'reach'] ];
+  var BAGS_AT = 0.78;             // кассчин тор өгөх мөч
+  // [id, гарт гарч ирэх эхлэл, сагсанд орох төгсгөл, сагсны нүд, касс руу нисэх эхлэл, төгсгөл]
+  var ITEMS = [ ['it-apples', 0.165, 0.215, 0, 0.635, 0.66], ['it-bread', 0.305, 0.355, 1, 0.66, 0.685], ['it-milk', 0.465, 0.515, 2, 0.685, 0.71] ];
+  var CHAPTERS = [0.10, 0.26, 0.41, 0.57, 0.84];   // явцын цэгүүдийн хил
+
+  /* ---------- Кассчин (лангууны цаана) ---------- */
+  var CASH = { x: 3950, top: 570, clip: 687, k: 0.27 };       // толгойн голын x, толгойн орой, лангууны ирмэг
+  var CPOSES = { idle: [323, 161], scan: [469, 179], bags: [573, 137], wave: [403, 130] };  // [өргөн, толгойн гол]
+  var CWIN = [ ['bags', 0.722, 0.790], ['wave', 0.800, 0.930] ];
+  var SCANNER = { x: 3836, y: 648 };   // лангуун дээрх уншигч
+  var CBAG = { x: 3762, bottom: 674, h: 58 };   // лангуун дээр дүүрэх тор
+  var SCAN_PT = { x: 217, y: 349 };                            // уншигчийн цэг (толин эргүүлсэн scan зураг дээр)
+  var CART = { k: 0.326, w: 452, h: 598 };                     // кассны дэргэд үлдэх тэрэг
+
+  var root = document.getElementById('root');
+  var world = document.getElementById('world');
+  var store = document.getElementById('store');
+  var woman = document.getElementById('woman');
+  var tray = document.getElementById('tray');
+  var slots = Array.prototype.slice.call(tray.querySelectorAll('.slot'));
+  var paid = document.getElementById('paid');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var steps = Array.prototype.slice.call(document.querySelectorAll('#progress span'));
+  var items = ITEMS.map(function (d) { return { el: document.getElementById(d[0]), t0: d[1], t1: d[2], slot: d[3], c0: d[4], c1: d[5] }; });
+  var cashier = document.getElementById('cashier'), parked = document.getElementById('parked'), beep = document.getElementById('beep');
+  var clayers = Array.prototype.slice.call(cashier.querySelectorAll('img'));
+
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function ease(t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+
+  // зургуудыг урьдчилан ачаалах
+  var srcs = ['cashier-idle','cashier-bags','cashier-wave','cart'].map(function (k) { return 'assets/sprites/' + k + '.png'; });
+  for (var q = 0; q < VCART.walkN; q++) srcs.push('assets/walk-cart/' + pad2(q) + '.webp');
+  for (q = 0; q < VCART.reachN; q++) srcs.push('assets/reach/' + pad2(q) + '.webp');
+  for (q = 0; q < VBAGS.n; q++) srcs.push('assets/walk-bags/' + pad2(q) + '.webp');
+  var loaded = 0, need = srcs.length + 1;
+  function ready() { if (++loaded >= need) { document.getElementById('loading').classList.add('done'); measure(); } }
+  srcs.forEach(function (s) { var i = new Image(); i.onload = i.onerror = ready; i.src = s; });
+  if (store.complete) ready(); else store.onload = store.onerror = ready;
+
+  function xAt(p) {
+    for (var i = 1; i < PATH.length; i++) {
+      if (p <= PATH[i][0]) {
+        var a = PATH[i - 1], b = PATH[i], t = (p - a[0]) / (b[0] - a[0] || 1);
+        return lerp(a[1], b[1], ease(t));
+      }
+    }
+    return PATH[PATH.length - 1][1];
+  }
+  function smooth(e0, e1, v) { var k = clamp((v - e0) / (e1 - e0), 0, 1); return k * k * (3 - 2 * k); }
+  var F = 0.012;   // уусалтын урт
+
+  var cur = 0, target = 0, raf = 0, vw = 0, vh = 0, s = 1;
+  var wCart = document.getElementById('wCart'), wBags = document.getElementById('wBags');
+  var cartSrc = '', bagsSrc = '';
+  // бараа авах зогсолтын аль кадр дээр байгаа вэ (−1 = зогсолтод биш)
+  function reachIdx(p) {
+    for (var i = 0; i < STOPS.length; i++) {
+      var st = STOPS[i];
+      if (p >= st[0] && p < st[1]) return Math.min(VCART.reachN - 1, Math.floor((p - st[0]) / (st[1] - st[0]) * VCART.reachN));
+    }
+    return -1;
+  }
+
+  function measure() {
+    vw = window.innerWidth; vh = window.innerHeight;
+    s = vh / IMG_H;
+    var r = root.getBoundingClientRect();
+    var total = r.height - vh;
+    target = clamp(total > 0 ? -r.top / total : 0, 0, 1);
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+
+  function render(p) {
+    var x = xAt(p);
+    var worldW = IMG_W * s;
+    var anchor = vw < 760 ? 0.30 : 0.36;
+    var camX = clamp(x * s - vw * anchor, 0, Math.max(0, worldW - vw));
+    world.style.transform = 'translate3d(' + (-camX).toFixed(1) + 'px,0,0)';
+
+    // эмэгтэй — видеоны кадрууд
+    var speed = Math.abs(xAt(Math.min(1, p + 0.004)) - x);           // одоо хөдөлж байгаа эсэх
+    var ri = reachIdx(p), src;
+    if (ri >= 0) src = 'assets/reach/' + pad2(ri) + '.webp';
+    else if (speed < 0.5) src = 'assets/reach/00.webp';             // зогсож байхад
+    else src = 'assets/walk-cart/' + pad2(((Math.floor(x / VCART.stride)) % VCART.walkN + VCART.walkN) % VCART.walkN) + '.webp';
+    if (src !== cartSrc) { wCart.src = src; cartSrc = src; }
+    var bsrc = 'assets/walk-bags/' + pad2(speed < 0.5 ? VBAGS.idle : ((Math.floor(x / VBAGS.stride) + VBAGS.idle) % VBAGS.n + VBAGS.n) % VBAGS.n) + '.webp';
+    if (bsrc !== bagsSrc) { wBags.src = bsrc; bagsSrc = bsrc; }
+    var kb = smooth(BAGS_AT - F, BAGS_AT + F, p);
+    function place(el, V, op) {
+      el.style.width = (V.w * V.k * s).toFixed(1) + 'px';
+      el.style.transform = 'translate3d(' + ((x - V.headX * V.k) * s).toFixed(1) + 'px,' + (((FLOOR - 2) - V.bottom * V.k) * s).toFixed(1) + 'px,0)';
+      el.style.opacity = op.toFixed(3);
+    }
+    place(wCart, VCART, 1 - kb);
+    place(wBags, VBAGS, kb);
+    // видеоны кадрын цэг → дэлгэцийн px
+    function vx(px) { return (x + (px - VCART.headX) * VCART.k) * s - camX; }
+    function vy(py) { return ((FLOOR - 2) - (VCART.bottom - py) * VCART.k) * s; }
+
+    // кассчин
+    var K = CASH.k * s;
+    var cw = { idle: 1, scan: 0, bags: 0, wave: 0 };
+    CWIN.forEach(function (c) { var k2 = Math.min(smooth(c[1] - F, c[1] + F, p), 1 - smooth(c[2] - F, c[2] + F, p)); cw[c[0]] += k2; cw.idle -= k2; });
+    cw.idle = Math.max(0, cw.idle);
+    var boxL = (CASH.x - 320) * s;
+    cashier.style.left = boxL.toFixed(1) + 'px'; cashier.style.top = '0px';
+    cashier.style.width = (640 * s).toFixed(1) + 'px'; cashier.style.height = (CASH.clip * s).toFixed(1) + 'px';
+    var cbob = Math.sin(p * 900) * 1.5 * (cw.scan);   // уншуулахдаа бага зэрэг хөдөлнө
+    clayers.forEach(function (im) {
+      var d = CPOSES[im.dataset.pose], wpx = d[0] * K;
+      var l = (CASH.x - (d[0] - d[1]) * CASH.k) * s - boxL;   // толин эргүүлсэн тул толгойн гол = өргөн − гол
+      im.style.width = wpx.toFixed(1) + 'px';
+      im.style.left = l.toFixed(1) + 'px';
+      im.style.top = (CASH.top * s + cbob).toFixed(1) + 'px';
+      im.style.opacity = cw[im.dataset.pose].toFixed(3);
+    });
+    var scanX = (CASH.x - (CPOSES.scan[0] - CPOSES.scan[1]) * CASH.k + SCAN_PT.x * CASH.k) * s - camX;
+    var scanY = (CASH.top + SCAN_PT.y * CASH.k) * s;
+
+    // кассны дэргэд үлдэх тэрэг (эмэгтэйн тэргийн байранд)
+    var cartRight = 3500 + (462 - VCART.headX) * VCART.k, cartBottom = FLOOR - 4;
+    parked.style.width = (CART.w * CART.k * s).toFixed(1) + 'px';
+    parked.style.left = ((cartRight - CART.w * CART.k) * s).toFixed(1) + 'px';
+    parked.style.top = ((cartBottom - CART.h * CART.k) * s).toFixed(1) + 'px';
+    parked.style.opacity = (p < 0.62 ? 0 : smooth(BAGS_AT - F, BAGS_AT + F, p)).toFixed(3);
+
+    // сагс → касс
+    var trayOn = p > 0.12 && p < 0.715;
+    tray.style.opacity = trayOn ? 1 : 0;
+    var beepOn = 0;
+    items.forEach(function (it) {
+      var ic = INCART[it.el.id];
+      var size = ic.h * VCART.k * s, el = it.el, op = 0, sc = 1;
+      var cx = vx(ic.x), cy = vy(ic.bottom) - size / 2;              // тэрэгний сагсанд
+      var px = cx, py = cy;
+      if (p < it.t0) { op = 0; }
+      else if (p < it.t1) {                    // гараа сунгаж авна → гартаа барьсаар тэрэгт хийнэ
+        var ri2 = reachIdx(p);
+        if (ri2 < 8) op = 0;
+        else if (ri2 <= 21) { var hp = HANDPATH[ri2]; px = vx(hp[0]); py = vy(hp[1]) - size * 0.3; op = ri2 === 8 ? 0.6 : 1; }
+        else { var hz = HANDPATH[21], e = ease(Math.min(1, (ri2 - 21) / 3)); px = lerp(vx(hz[0]), cx, e); py = lerp(vy(hz[1]) - size * 0.3, cy, e); op = 1; }
+      } else if (p < it.c0) { op = 1; }        // тэрэгний сагсанд явна
+      else if (p < it.c1) {                    // тэрэг → уншигч (дуугарна) → лангуун дээрх тор
+        var c = (p - it.c0) / (it.c1 - it.c0);
+        var sx = SCANNER.x * s - camX, sy = SCANNER.y * s - 18;
+        var bx = CBAG.x * s - camX, by = (CBAG.bottom - CBAG.h * 0.85) * s;
+        if (c < 0.45) { var e1 = ease(c / 0.45); px = lerp(cx, sx, e1); py = lerp(cy, sy, e1) - Math.sin(e1 * Math.PI) * 60; op = 1; }
+        else if (c < 0.6) { px = sx; py = sy; op = 1; beepOn = 1; }
+        else { var e2 = ease((c - 0.6) / 0.4); px = lerp(sx, bx, e2); py = lerp(sy, by, e2) - Math.sin(e2 * Math.PI) * 40; sc = lerp(1, 0.5, e2); op = e2 < 0.75 ? 1 : 1 - (e2 - 0.75) / 0.25; }
+      } else { op = 0; }
+      var wdt = size * ic.ar;
+      el.style.width = wdt.toFixed(1) + 'px'; el.style.height = size.toFixed(1) + 'px';
+      el.style.opacity = clamp(op, 0, 1).toFixed(3);
+      el.style.transform = 'translate3d(' + (px - wdt / 2).toFixed(1) + 'px,' + (py - size / 2).toFixed(1) + 'px,0) scale(' + sc.toFixed(3) + ')';
+    });
+    beep.style.opacity = beepOn;
+
+    // лангуун дээрх тор: бараа бүр уншигдаад энд орно, дараа нь кассчин эмэгтэйд өгнө
+    var bagEl = document.getElementById('it-bag'), bh = CBAG.h * s, bsz = bh;
+    var restX = CBAG.x * s - camX, restY = CBAG.bottom * s - bh / 2;
+    var toX = x * s - camX + 10 * s, toY = ((FLOOR - 2) - 260 * VBAGS.k) * s;
+    var bt = clamp((p - 0.735) / (BAGS_AT + 0.004 - 0.735), 0, 1), be = ease(bt);
+    var bop = p < 0.62 ? 0 : p < 0.635 ? (p - 0.62) / 0.015 : 1;
+    if (bt > 0.85) bop = (1 - bt) / 0.15;
+    if (p > BAGS_AT + 0.004) bop = 0;
+    var fill = 1 + 0.06 * clamp((p - 0.66) / 0.05, 0, 1);   // бараа орох тусам бага зэрэг томорно
+    bagEl.style.width = bagEl.style.height = bsz.toFixed(1) + 'px';
+    bagEl.style.opacity = clamp(bop, 0, 1).toFixed(3);
+    bagEl.style.transform = 'translate3d(' + (lerp(restX, toX, be) - bsz / 2).toFixed(1) + 'px,' + (lerp(restY, toY, be) - bsz / 2 - Math.sin(be * Math.PI) * 40).toFixed(1) + 'px,0) scale(' + fill.toFixed(3) + ')';
+    beep.style.opacity = beepOn;
+    beep.style.transform = 'translate3d(' + (SCANNER.x * s - camX - 7).toFixed(1) + 'px,' + (SCANNER.y * s - 7).toFixed(1) + 'px,0)';
+
+    // картууд
+    cards.forEach(function (c) {
+      var a = +c.dataset.from, b = +c.dataset.to;
+      var op = Math.min(clamp((p - a) / 0.025, 0, 1), clamp((b - p) / 0.025, 0, 1));
+      c.style.opacity = op.toFixed(3);
+      c.style.visibility = op > 0.01 ? 'visible' : 'hidden';
+      c.style.transform = 'translateY(' + ((1 - op) * 16).toFixed(1) + 'px)';
+    });
+    paid.style.opacity = (0.15 + clamp((p - 0.715) / 0.02, 0, 1) * 0.85).toFixed(3);
+
+    var active = 0; while (active < CHAPTERS.length && p >= CHAPTERS[active]) active++;
+    steps.forEach(function (st, i) { st.classList.toggle('now', i === active); st.classList.toggle('done', i < active); });
+  }
+
+  function tick() {
+    raf = 0;
+    var d = target - cur;
+    cur = Math.abs(d) < 0.00015 ? target : cur + d * 0.12;
+    render(cur);
+    if (cur !== target) raf = requestAnimationFrame(tick);
+  }
+
+  // цэсний холбоосууд → явцын тодорхой цэг рүү гүйлгэх
+  Array.prototype.forEach.call(document.querySelectorAll('[data-go]'), function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var total = root.offsetHeight - window.innerHeight;
+      window.scrollTo({ top: root.offsetTop + total * +a.dataset.go, behavior: 'smooth' });
+    });
+  });
+
+  // Нээлттэй эсэх — Улаанбаатарын цагаар (09:00–23:00)
+  var statusEl = document.getElementById('status');
+  function openTick() {
+    var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Ulaanbaatar', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    var get = function (t) { return Number(parts.filter(function (x) { return x.type === t; })[0].value); };
+    var m = get('hour') * 60 + get('minute'), open = m >= 540 && m < 1380;
+    statusEl.textContent = open ? 'Одоо нээлттэй · 23:00 хүртэл' : 'Одоо хаалттай · ' + (m < 540 ? '' : 'маргааш ') + '09:00-д нээгдэнэ';
+    statusEl.classList.toggle('closed', !open);
+  }
+  openTick(); setInterval(openTick, 60000);
+
+  window.addEventListener('scroll', measure, { passive: true });
+  window.addEventListener('resize', function () { measure(); render(cur); });
+  measure();
+})();
+</script>
+</body>
+</html>

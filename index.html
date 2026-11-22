@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="mn" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Баян Богд Супер Маркет — Даланзадгад</title>
+<meta name="description" content="Баян Богд Супер Маркет — Даланзадгад хот, Баруун сайхан 20:20 тоот. Өдөр бүр 09:00–23:00. Утас 8880 0515.">
+<meta name="theme-color" content="#0B1A3D">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="mn_MN">
+<meta property="og:title" content="Баян Богд Супер Маркет — Даланзадгад">
+<meta property="og:description" content="Хүнс, ахуйн бараа, шинэ жимс ногоо — бүгд нэг дор. Өдөр бүр 09:00–23:00.">
+<!-- og:image-д бүтэн URL хэрэгтэй тул домэйн тодорхой болсны дараа нэмнэ -->
+<script>
+  /* Хөдөлгөөнт горимыг зурах өмнө асаана. Хэрэглэгч "хөдөлгөөн багасгах" сонгосон бол
+     эсвэл JS ажиллахгүй бол үзэгдлүүд энгийн босоо жагсаалтаар харагдана. */
+  (function(r){
+    r.classList.remove('no-js');
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('motion','loading');
+    setTimeout(function(){ r.classList.remove('loading'); }, 3000);
+  })(document.documentElement);
+</script>
+<link rel="icon" href="assets/favicon.ico">
+<link rel="preload" as="image" type="image/webp"
+      imagesrcset="assets/images/scene-01-exterior-1280.webp 1280w, assets/images/scene-01-exterior-1920.webp 1920w, assets/images/scene-01-exterior-2560.webp 2560w"
+      imagesizes="(max-aspect-ratio: 16/9) 178vh, 100vw" fetchpriority="high">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1A3D; --night:#081330; --cream:#F1F5FC; --accent:#8ED1FF; --brand:#1E4FB4; --orange:#EE5A24;
+    --muted:#4A5675; --line:#DCE4F2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Manrope,system-ui,sans-serif;background:var(--ink);color:var(--cream);-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Unbounded,sans-serif;font-weight:600;letter-spacing:-.01em}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+  /* ---------- Header ---------- */
+  .top{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+       padding:18px clamp(16px,4vw,48px);pointer-events:none;transition:background .3s,box-shadow .3s}
+  .top.solid{background:rgba(11,26,61,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  .top.solid .btn.ghost{background:var(--accent);color:var(--ink)}
+  .brand{display:flex;align-items:center;gap:10px;pointer-events:auto;text-decoration:none;color:#fff}
+  .brand b{font-family:Unbounded;font-size:15px;font-weight:700;line-height:1.05}
+  .brand small{display:block;font-size:10px;letter-spacing:.18em;opacity:.8;font-weight:700}
+  .brand i{width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .brand i img{width:34px;height:34px}
+  .btn{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;
+       background:var(--accent);color:var(--ink);font-weight:800;font-size:14px;text-decoration:none;border:0;cursor:pointer;
+       transition:transform .2s,box-shadow .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.18)}
+  .btn.ghost{background:rgba(255,255,255,.12);color:#fff;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+  /* ---------- Journey ----------
+     Үндсэн (жагсаалт) горим: JS-гүй эсвэл reduced-motion үед үзэгдэл бүр нэг дэлгэц.
+     .motion горим: бүх үзэгдэл давхцаж, GSAP pin + scrub-аар солигдоно. */
+  .journey{position:relative;background:var(--night)}
+  .scenes{position:relative}
+  .scene{position:relative;isolation:isolate;height:100vh;height:100svh;min-height:520px;overflow:hidden;background:var(--night)}
+  .scene picture{position:absolute;inset:0;display:block}
+  .scene img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--pos-x,50%) 50%;transform-origin:var(--pos-x,50%) 55%}
+  .scene::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:
+      linear-gradient(180deg,rgba(5,12,32,.5) 0%,rgba(5,12,32,0) 22%,rgba(5,12,32,0) 45%,rgba(5,12,32,.82) 100%),
+      radial-gradient(90% 70% at 0% 100%,rgba(5,12,32,.45),transparent 70%)}
+  .dim{position:absolute;inset:0;z-index:4;background:#050c20;opacity:0;pointer-events:none}
+
+  /* Pin хийгдсэн хэсэг том viewport-оор (lvh) — утасны хаягийн мөр нуугдахад доор нь цоорхой гарахгүй.
+     --bar = хаягийн мөр харагдаж байх үед дэлгэцийн доор далдлагдах хэсэг; caption-ыг түүгээр дээш зөөнө. */
+  .motion{--bar:0px}
+  @supports (height:100lvh){.motion{--bar:calc(100lvh - 100svh)}}
+  .motion .journey{height:100vh;height:100lvh;overflow:hidden}
+  .motion .scenes{position:absolute;inset:0;transform-origin:50% 0}
+  .motion .scene{position:absolute;inset:0;height:auto;min-height:0;visibility:hidden;opacity:0}
+  .motion .scene:first-child{visibility:visible;opacity:1}
+  .motion .scene:not(:first-child) .cap,.motion .badge{visibility:hidden;opacity:0}
+  .motion.loading .scene:first-child .cap>*,.motion.loading .top,.motion.loading .rail{opacity:0}
+
+  /* captions */
+  .cap{position:absolute;z-index:5;left:clamp(16px,5vw,72px);bottom:clamp(28px,9vh,96px);max-width:min(640px,86vw)}
+  .cap .k{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+          color:var(--ink);background:var(--accent);padding:6px 12px;border-radius:99px;margin-bottom:16px}
+  .ttl{font-size:clamp(30px,4.8vw,64px);line-height:1.06;color:#fff;text-shadow:0 2px 30px rgba(0,0,0,.35)}
+  .ttl .w-mask{padding:0 .05em .16em;margin:0 -.05em -.16em}
+  .cap p{margin-top:14px;font-size:clamp(15px,1.4vw,18px);line-height:1.55;color:rgba(255,255,255,.9);max-width:520px}
+  .cap .row{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+
+  /* хөнгөлөлтийн тэмдэг (касс) */
+  .badge{position:absolute;z-index:5;right:clamp(72px,12vw,220px);top:clamp(96px,18vh,220px);width:clamp(118px,13vw,190px);aspect-ratio:1;
+         border-radius:50%;background:var(--orange);color:#fff;display:grid;place-content:center;text-align:center;
+         box-shadow:0 22px 50px rgba(0,0,0,.35),inset 0 0 0 6px rgba(255,255,255,.18);transform:rotate(-6deg)}
+  .badge b{font-family:Unbounded;font-weight:700;font-size:clamp(24px,2.7vw,42px);line-height:1;font-variant-numeric:tabular-nums}
+  .badge small{font-size:clamp(10px,.9vw,12px);font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-top:6px}
+
+  /* progress rail — үзэгдэл рүү үсрэх навигаци */
+  .rail,.scroll-hint{display:none}
+  .motion .rail{display:block;position:absolute;z-index:6;right:clamp(12px,3vw,40px);top:calc(50% - var(--bar) / 2);transform:translateY(-50%);filter:drop-shadow(0 1px 4px rgba(0,0,0,.45))}
+  .rail ol{list-style:none;position:relative;display:flex;flex-direction:column;gap:8px}
+  .rail .line{position:absolute;left:50%;top:11px;bottom:11px;width:2px;margin-left:-1px;background:rgba(255,255,255,.4);border-radius:2px;overflow:hidden}
+  .rail .fill{position:absolute;inset:0;background:var(--accent);transform:scaleY(0);transform-origin:top}
+  .rail a{position:relative;display:grid;place-items:center;width:22px;height:22px;text-decoration:none;border-radius:50%}
+  .rail i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.6);transition:all .3s}
+  .rail a.on i{background:var(--accent)}
+  .rail a[aria-current] i{width:14px;height:14px;box-shadow:0 0 0 5px rgba(142,209,255,.25)}
+  .rail span{position:absolute;right:30px;top:50%;transform:translate(6px,-50%);white-space:nowrap;font-size:12px;font-weight:800;letter-spacing:.06em;
+             color:#fff;background:rgba(11,26,61,.75);padding:5px 10px;border-radius:99px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+  .rail a:hover span,.rail a:focus-visible span{opacity:1;transform:translate(0,-50%)}
+  .motion .scroll-hint{position:absolute;z-index:6;left:50%;bottom:calc(22px + var(--bar));transform:translateX(-50%);font-size:12px;letter-spacing:.2em;
+               text-transform:uppercase;color:rgba(255,255,255,.75);display:flex;flex-direction:column;align-items:center;gap:8px}
+  .scroll-hint span{width:2px;height:34px;background:linear-gradient(var(--accent),transparent);animation:drip 1.6s infinite}
+  @keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+  .motion .cap{bottom:calc(clamp(28px,9vh,96px) + var(--bar))}
+  @media (max-width:760px){
+    .cap,.motion .cap{left:16px;right:48px;bottom:calc(40px + env(safe-area-inset-bottom) + var(--bar,0px))}
+    .ttl{font-size:clamp(26px,8.4vw,40px)}
+    .cap .k{margin-bottom:12px;font-size:11px}
+    .cap p{font-size:15px;margin-top:10px}
+    .rail ol{gap:4px}
+    .scroll-hint{display:none !important}
+    .rail span{display:none}
+    .badge{right:20px;top:96px}
+    .scene::after{background:linear-gradient(180deg,rgba(5,12,32,.55) 0%,rgba(5,12,32,0) 20%,rgba(5,12,32,0) 38%,rgba(5,12,32,.9) 100%)}
+  }
+  @media (max-height:520px) and (orientation:landscape){
+    .top{padding:10px 16px}
+    .brand i{width:34px;height:34px}.brand i img{width:28px;height:28px}
+    .cap,.motion .cap{left:max(16px,env(safe-area-inset-left));right:auto;bottom:calc(16px + var(--bar,0px));max-width:58vw}
+    .ttl{font-size:clamp(22px,7vh,34px)}
+    .cap .k{margin-bottom:8px;padding:4px 10px;font-size:10px}
+    .cap p{margin-top:6px;font-size:13px;line-height:1.45}
+    .cap .row{margin-top:10px}
+    .rail ol{gap:0}
+    .rail span{display:none}
+    .badge{width:96px;top:64px;right:64px}
+    .scroll-hint{display:none !important}
+    .scene{min-height:0}
+  }
+  /* Босоо дэлгэцэнд зургийн гол объектыг (дүрийг) төвд барина */
+  @media (min-aspect-ratio:16/9){.scene img{--pos-x:50%}}
+
+  /* ---------- Contact ---------- */
+  .contact{position:relative;z-index:2;background:var(--cream);color:var(--ink);padding:clamp(64px,10vw,120px) clamp(16px,5vw,72px)}
+  .motion .contact{margin-top:-28px;border-radius:28px 28px 0 0;box-shadow:0 -20px 60px rgba(0,0,0,.35)}
+  .contact .wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(28px,5vw,64px);align-items:start}
+  .contact h2{font-size:clamp(30px,4vw,52px);line-height:1.08}
+  .contact .lead{margin-top:16px;color:var(--muted);font-size:17px;line-height:1.6;max-width:460px}
+  .contact .row{margin-top:28px;display:flex;gap:10px;flex-wrap:wrap}
+  .contact .btn.dark{background:var(--brand);color:#fff}
+  .contact .btn:not(.dark){background:var(--ink);color:#fff}
+  .cards{display:grid;gap:12px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;transition:transform .25s,box-shadow .25s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(11,26,61,.08)}
+  .card small{display:block;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .card b{font-size:17px}
+  .card a{color:inherit}
+  .card .more{display:inline-block;margin-top:4px;font-size:14px;font-weight:700;text-decoration:underline}
+  .status{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;font-weight:700;color:#1f7a43}
+  .status::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px rgba(47,174,91,.18)}
+  .status.closed{color:var(--orange)}
+  .status.closed::before{box-shadow:0 0 0 4px rgba(238,90,36,.18)}
+  .map{margin-top:28px;border-radius:18px;overflow:hidden;border:1px solid var(--line);aspect-ratio:16/10;background:#e3e9f4}
+  .map iframe{width:100%;height:100%;border:0;display:block}
+  @media (max-width:860px){.contact .wrap{grid-template-columns:1fr}}
+  footer{background:var(--ink);color:rgba(255,255,255,.6);text-align:center;padding:28px 16px;font-size:13px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#top"><i><img src="assets/logo.svg" alt=""></i><span><b>Баян Богд</b><small>СУПЕР МАРКЕТ</small></span></a>
+  <a class="btn ghost" href="#contact">Байршил</a>
+</header>
+
+<div id="smooth-wrapper"><div id="smooth-content">
+<main>
+<section class="journey" id="top" aria-label="Дэлгүүр хэсэх аялал">
+  <!-- Үзэгдэл бүр: data-reveal = өмнөх үзэгдлээс хэрхэн шилжих (doors | wipe | circle | rise | drop | fade),
+       --pos-x = босоо дэлгэц дээр зургийн хэвтээ голын цэг -->
+  <div class="scenes" id="scenes">
+    <article class="scene" id="s1" style="--pos-x:52%">
+      <picture>
+        <source type="image/webp" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" srcset="assets/images/scene-01-exterior-1280.webp 1280w, assets/images/scene-01-exterior-1920.webp 1920w, assets/images/scene-01-exterior-2560.webp 2560w">
+        <img src="assets/images/scene-01-exterior-1920.jpg" width="2576" height="1561" fetchpriority="high" decoding="async"
+             alt="Оройн цэнхэр тэнгэр доор гэрэлтэй Баян Богд Супер Маркетын барилга, дээл өмссөн эмэгтэй хаалга руу алхаж байна">
+      </picture>
+      <div class="cap">
+        <span class="k">Даланзадгад хот</span>
+        <h1 class="ttl">Баян Богд<br>Супер Маркет</h1>
+        <p>Өдөр тутмын хэрэгцээ нэг дор — хүнс, ахуйн бараа, шинэ жимс ногоо.</p>
+      </div>
+    </article>
+
+    <article class="scene" id="s2" data-reveal="doors" style="--pos-x:34%">
+      <picture>
+        <source type="image/webp" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" srcset="assets/images/scene-02-doors-1280.webp 1280w, assets/images/scene-02-doors-1920.webp 1920w, assets/images/scene-02-doors-2560.webp 2560w">
+        <img src="assets/images/scene-02-doors-1920.jpg" width="2576" height="1438" fetchpriority="low" decoding="async"
+             alt="Шилэн автомат хаалга нээгдэж, дэлгүүрийн гэрэлтэй тавиурууд харагдана">
+      </picture>
+      <div class="cap">
+        <span class="k">Өдөр бүр нээлттэй</span>
+        <h2 class="ttl">09:00 – 23:00</h2>
+        <p>Ажлын дараа ч, амралтын өдөр ч — өдөр бүр оройн 23:00 хүртэл нээлттэй.</p>
+      </div>
+    </article>
+
+    <article class="scene" id="s3" data-reveal="wipe" style="--pos-x:42%">
+      <picture>
+        <source type="image/webp" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" srcset="assets/images/scene-03-cart-1280.webp 1280w, assets/images/scene-03-cart-1920.webp 1920w, assets/images/scene-03-cart-2560.webp 2560w">
+        <img src="assets/images/scene-03-cart-1920.jpg" width="2576" height="1438" fetchpriority="low" decoding="async"
+             alt="Үүдэнд эгнүүлсэн тэрэгнээс нэгийг татаж авч байна">
+      </picture>
+      <div class="cap">
+        <span class="k">Тав тухтай</span>
+        <h2 class="ttl">Тэргээ аваад<br>эхэлцгээе</h2>
+        <p>Өргөн зогсоол, цэвэрхэн орчин, тав тухтай тэрэг.</p>
+      </div>
+    </article>
+
+    <article class="scene" id="s4" data-reveal="circle" style="--pos-x:30%">
+      <picture>
+        <source type="image/webp" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" srcset="assets/images/scene-04-produce-1280.webp 1280w, assets/images/scene-04-produce-1920.webp 1920w, assets/images/scene-04-produce-2560.webp 2560w">
+        <img src="assets/images/scene-04-produce-1920.jpg" width="2576" height="1438" fetchpriority="low" decoding="async"
+             alt="Жимс ногооны лангуунаас алим сонгож тэрэг рүү хийж байна">
+      </picture>
+      <div class="cap">
+        <span class="k">Шинэхэн</span>
+        <h2 class="ttl">Жимс, ногоо —<br>өдөр бүр шинэ</h2>
+        <p>Шинэ ургацын алим, ногоо, жимс — өнгө өнгөөрөө.</p>
+      </div>
+    </article>
+
+    <article class="scene" id="s5" data-reveal="rise" style="--pos-x:50%">
+      <picture>
+        <source type="image/webp" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" srcset="assets/images/scene-05-aisle-1280.webp 1280w, assets/images/scene-05-aisle-1920.webp 1920w, assets/images/scene-05-aisle-2560.webp 2560w">
+        <img src="assets/images/scene-05-aisle-1920.jpg" width="2576" height="1438" fetchpriority="low" decoding="async"
+             alt="Бараагаар дүүрэн урт тавиурын эгнээгээр тэрэг түрж явна">
+      </picture>
+      <div class="cap">
+        <span class="k">Баасан бүр 10:00</span>
+        <h2 class="ttl">Долоо хоног бүр<br>шинэ бараа</h2>
+        <p>Хүнс, ахуйн бараа, импортын бүтээгдэхүүн. “ШИНЭ” шошготой барааг хамгийн түрүүнд үзээрэй.</p>
+      </div>
+    </article>
+
+    <article class="scene" id="s6" data-reveal="fade" style="--pos-x:44%">
+      <picture>
+        <source type="image/webp" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" srcset="assets/images/scene-06-checkout-1280.webp 1280w, assets/images/scene-06-checkout-1920.webp 1920w, assets/images/scene-06-checkout-2560.webp 2560w">
+        <img src="assets/images/scene-06-checkout-1920.jpg" width="2576" height="1438" fetchpriority="low" decoding="async"
+             alt="Кассчин инээмсэглэн бараа уншуулж байна">
+      </picture>
+      <div class="badge" aria-hidden="true"><b>−<span class="num">15</span>%</b><small>Шинэ бараанд</small></div>
+      <div class="cap">
+        <span class="k">Урамшуулал</span>
+        <h2 class="ttl">Шинэ бараанд<br>эхний 3 хоног −15%</h2>
+        <p>Хөнгөлөлт кассаар автоматаар тооцогдоно. Хурдан, найрсаг үйлчилгээ.</p>
+      </div>
+    </article>
+
+    <article class="scene" id="s7" data-reveal="drop" style="--pos-x:52%">
+      <picture>
+        <source type="image/webp" sizes="(max-aspect-ratio: 16/9) 178vh, 100vw" srcset="assets/images/scene-07-exit-1280.webp 1280w, assets/images/scene-07-exit-1920.webp 1920w, assets/images/scene-07-exit-2560.webp 2560w">
+        <img src="assets/images/scene-07-exit-1920.jpg" width="2576" height="1560" fetchpriority="low" decoding="async"
+             alt="Хоёр цүнхтэй дэлгүүрээс инээмсэглэн гарч байна, ард нь гэрэлтэй дэлгүүр ба эмийн сан">
+      </picture>
+      <div class="cap">
+        <span class="k">Эмийн сан хажуудаа</span>
+        <h2 class="ttl">Нэг зогсоод<br>бүгдийг</h2>
+        <p>Хэрэгтэй бүхнээ аваад гэртээ. Дараагийн удаа уулзъя!</p>
+        <div class="row"><a class="btn" href="#contact">Байршил харах</a></div>
+      </div>
+    </article>
+  </div>
+
+  <nav class="rail" aria-label="Аяллын алхам">
+    <ol>
+      <li class="line" aria-hidden="true"><div class="fill"></div></li>
+      <li><a href="#s1"><i></i><span>Орох</span></a></li>
+      <li><a href="#s2"><i></i><span>Хаалга</span></a></li>
+      <li><a href="#s3"><i></i><span>Тэрэг</span></a></li>
+      <li><a href="#s4"><i></i><span>Жимс</span></a></li>
+      <li><a href="#s5"><i></i><span>Тавиур</span></a></li>
+      <li><a href="#s6"><i></i><span>Касс</span></a></li>
+      <li><a href="#s7"><i></i><span>Гарах</span></a></li>
+    </ol>
+  </nav>
+  <div class="scroll-hint" aria-hidden="true">Доош гүйлгээрэй<span></span></div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div>
+      <h2 class="reveal">Дараагийн удаа<br>манайд ирээрэй</h2>
+      <p class="lead reveal">Хүнс, ахуйн бараа, шинэ жимс ногоо — бүгд нэг дор. Хажууд нь эмийн сан ажилладаг тул нэг зогсоод бүгдийг авна.</p>
+      <div class="row reveal">
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Чиглэл авах</a>
+        <a class="btn dark" href="tel:+97688800515">Залгах</a>
+      </div>
+      <div class="map reveal"><iframe src="https://www.google.com/maps?q=43.572977,104.40381&z=17&output=embed" loading="lazy" title="Баян Богд Супер Маркетын байршил" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+    </div>
+    <div class="cards">
+      <div class="card reveal"><small>Хаяг</small><b>Даланзадгад хот, Баруун сайхан 20:20 тоот</b><br><a class="more" href="https://www.google.com/maps/search/?api=1&query=43.572977,104.40381" target="_blank" rel="noopener noreferrer">Google Maps-д нээх</a></div>
+      <div class="card reveal"><small>Цагийн хуваарь</small><b>Өдөр бүр 09:00–23:00</b><br><span class="status" id="status"></span></div>
+      <div class="card reveal"><small>Утас</small><b><a href="tel:+97688800515">8880 0515</a></b></div>
+      <div class="card reveal"><small>Шинэ барааны өдөр</small><b>Баасан гараг бүр 10:00</b></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>© 2026 Баян Богд Супер Маркет</footer>
+</div></div>
+
+<script src="assets/js/gsap.min.js"></script>
+<script src="assets/js/ScrollTrigger.min.js"></script>
+<script src="assets/js/ScrollToPlugin.min.js"></script>
+<script src="assets/js/ScrollSmoother.min.js"></script>
+<script src="assets/js/SplitText.min.js"></script>
+<script>
+/* Нээлттэй эсэх — үргэлж Улаанбаатарын цагаар (09:00–23:00) */
+(function(){
+  const OPEN = 9*60, CLOSE = 23*60;
+  const el = document.getElementById('status');
+  function tick(){
+    const parts = new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Ulaanbaatar',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+    const m = Number(parts.find(p=>p.type==='hour').value)*60 + Number(parts.find(p=>p.type==='minute').value);
+    const open = m >= OPEN && m < CLOSE;
+    el.textContent = open ? 'Одоо нээлттэй · 23:00 хүртэл' : `Одоо хаалттай · ${m < OPEN ? '' : 'маргааш '}09:00-д нээгдэнэ`;
+    el.classList.toggle('closed', !open);
+  }
+  tick(); setInterval(tick, 60000);
+})();
+
+(function(){
+const root = document.documentElement;
+const ready = () => root.classList.remove('loading');
+
+// GSAP ачаалагдаагүй бол энгийн жагсаалт горимд үлдэнэ
+if (!window.gsap || !window.ScrollTrigger || !window.SplitText) { root.classList.remove('motion'); ready(); return; }
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, ScrollSmoother, SplitText);
+
+const header = document.querySelector('.top');
+const scenes = gsap.utils.toArray('.scene');
+const links  = gsap.utils.toArray('.rail a');
+const fill   = document.querySelector('.rail .fill');
+const N = scenes.length;
+
+/* Timeline-ийн хэмжээс (нэгж = нэг үзэгдэл).
+   Үзэгдэл i нь t=i үед бүрэн гарч ирнэ: [i-REVEAL, i] шилжилт → гарчиг орно → [i+.5] гарчиг гарна. */
+const REVEAL = .38, HOLD = .6, END = N - 1 + HOLD, VH_PER_UNIT = 1.2;
+
+// Өмнөх үзэгдлээс шилжих маск (clip-path)
+const REVEALS = {
+  doors:  ['inset(0% 50% 0% 50%)', 'inset(0% 0% 0% 0%)'],
+  wipe:   ['inset(0% 0% 0% 100%)', 'inset(0% 0% 0% 0%)'],
+  circle: ['circle(0% at 50% 55%)', 'circle(100% at 50% 55%)'],
+  rise:   ['inset(100% 0% 0% 0%)', 'inset(0% 0% 0% 0%)'],
+  drop:   ['inset(0% 0% 100% 0%)', 'inset(0% 0% 0% 0%)'],
+};
+
+let smoother = null, tl = null, current = -1, introPlayed = false;
+
+function setActive(t){
+  let idx = 0;
+  for (let i = 1; i < N; i++) if (t >= i - REVEAL / 2) idx = i;
+  if (idx === current) return;
+  current = idx;
+  links.forEach((a, i) => {
+    a.classList.toggle('on', i <= idx);
+    if (i === idx) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current');
+  });
+}
+
+function scrollToY(y){
+  const dist = Math.abs(y - (smoother ? smoother.scrollTop() : window.scrollY));
+  const duration = gsap.utils.clamp(.6, 1.6, dist / 2500);
+  if (smoother) gsap.to(smoother, { scrollTop:y, duration, ease:'power3.inOut', overwrite:true });
+  else gsap.to(window, { scrollTo:{ y, autoKill:true }, duration, ease:'power3.inOut', overwrite:true });
+}
+
+// Дотоод холбоосууд: үзэгдлийн цэг → timeline label руу, бусад → элемент рүү зөөлөн гүйлгэнэ
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a || !root.classList.contains('motion')) return;
+  const id = a.getAttribute('href').slice(1);
+  let y;
+  if (tl && /^s\d+$/.test(id)) y = tl.scrollTrigger.labelToScroll(id);
+  else if (id === 'top') y = 0;
+  else {
+    const target = document.getElementById(id);
+    if (!target) return;
+    y = smoother ? smoother.offset(target, 'top top') : target.getBoundingClientRect().top + window.scrollY;
+  }
+  e.preventDefault();
+  scrollToY(y);
+});
+
+// Фонт ачаалагдсаны дараа үгсийг хуваана (өргөн нь зөв тооцогдоно)
+document.fonts.ready.then(() => {
+const mm = gsap.matchMedia();
+mm.add({
+  motion:'(prefers-reduced-motion: no-preference)',
+  small:'(max-width: 760px), (max-height: 520px)',
+  fine:'(hover: hover) and (pointer: fine)',   // хулгана/trackpad — touch биш
+}, ctx => {
+  const { motion, small, fine } = ctx.conditions;
+  if (!motion) { root.classList.remove('motion'); ready(); return; }
+  root.classList.add('motion');
+  current = -1;
+
+  // ScrollSmoother зөвхөн хулганатай desktop дээр. Touch дээр native scroll (iOS-ийн momentum, хаягийн мөр зөв ажиллана).
+  smoother = fine && !small && !ScrollTrigger.isTouch
+    ? ScrollSmoother.create({ wrapper:'#smooth-wrapper', content:'#smooth-content', smooth:1 })
+    : null;
+
+  const splits = scenes.map(s => SplitText.create(s.querySelector('.ttl'), { type:'words', wordsClass:'w', mask:'words' }));
+  const dims = scenes.map(s => s.appendChild(Object.assign(document.createElement('i'), { className:'dim' })));
+  const KB = small ? 1.07 : 1.14;
+
+  tl = gsap.timeline({
+    defaults:{ ease:'none' },
+    scrollTrigger:{
+      trigger:'#top',
+      start:'top top',
+      // намхан (хэвтээ утас) дэлгэц дээр нэг swipe-аар хоёр үзэгдэл алгасахгүйн тулд доод хэмжээтэй
+      end:() => '+=' + Math.round(END * Math.max(window.innerHeight * VH_PER_UNIT, 720)),
+      pin:true,
+      scrub:smoother ? true : .4,   // ScrollSmoother өөрөө зөөлрүүлдэг; touch дээр бага зэрэг зөөлрүүлнэ
+      anticipatePin:smoother ? 0 : 1,
+      invalidateOnRefresh:true,
+      snap:{ snapTo:'labelsDirectional', duration:{ min:.25, max:.7 }, delay:.08, ease:'power2.inOut' },
+      onUpdate:self => setActive(self.progress * END),
+    }
+  });
+
+  tl.addLabel('s1', 0);
+  tl.to('.scroll-hint', { autoAlpha:0, duration:.12 }, 0);
+
+  scenes.forEach((scene, i) => {
+    const cap = scene.querySelector('.cap');
+    const img = scene.querySelector('img');
+    const badge = scene.querySelector('.badge');
+    const start = Math.max(0, i - REVEAL);
+    const stop  = i === N - 1 ? END : i + 1;
+
+    // Ken Burns: үзэгдэл харагдаж эхлэхээс дараагийнх нь бүрхэх хүртэл аажуу ойртоно
+    tl.fromTo(img, { scale:KB }, { scale:1, duration:stop - start }, start);
+
+    if (i > 0) {
+      const mask = REVEALS[scene.dataset.reveal];
+      if (mask) tl.fromTo(scene, { autoAlpha:1, clipPath:mask[0] }, { clipPath:mask[1], duration:REVEAL, ease:'power2.inOut' }, start);
+      else      tl.fromTo(scene, { autoAlpha:0, scale:1.06 }, { autoAlpha:1, scale:1, duration:REVEAL, ease:'power2.out' }, start);
+      tl.to(dims[i - 1], { opacity:.6, duration:REVEAL }, start);
+      tl.to(fill, { scaleY:i / (N - 1), duration:REVEAL }, start);
+
+      // гарчиг: kicker → үгс маскаас дээш → тайлбар
+      const t = i - .08;
+      tl.set(cap, { autoAlpha:1 }, t)
+        .from(cap.querySelector('.k'), { autoAlpha:0, y:16, duration:.14, ease:'power2.out' }, t)
+        .from(splits[i].words, { yPercent:115, duration:.2, stagger:.025, ease:'power3.out' }, t + .03)
+        .from(cap.querySelectorAll('p, .row'), { autoAlpha:0, y:22, duration:.16, stagger:.04, ease:'power2.out' }, t + .1);
+
+      if (badge) {
+        tl.fromTo(badge, { autoAlpha:0, scale:.4, rotate:-30 }, { autoAlpha:1, scale:1, rotate:-6, duration:.22, ease:'back.out(2)' }, t + .04)
+          .from(badge.querySelector('.num'), { textContent:0, snap:{ textContent:1 }, duration:.22 }, t + .04);
+      }
+      tl.addLabel('s' + (i + 1), i + .25);
+    }
+
+    if (i < N - 1) {
+      tl.to(cap, { autoAlpha:0, y:-30, duration:.12, ease:'power1.in' }, i + .5);
+      if (badge) tl.to(badge, { autoAlpha:0, scale:.8, duration:.12, ease:'power1.in' }, i + .5);
+    }
+  });
+  tl.addLabel('end', END);
+
+  // Аялал дуусахад зургууд гүнзгийрч, холбоо барих хэсэг дээгүүр нь гарч ирнэ
+  gsap.timeline({ scrollTrigger:{ trigger:'#contact', start:'top bottom', end:'top top', scrub:true } })
+    .to('#scenes', { yPercent:25, scale:.92, opacity:.35, ease:'none' });
+
+  // Холбоо барих хэсгийн элементүүд дарааллаар гарна
+  gsap.set('.reveal', { autoAlpha:0, y:32 });
+  ScrollTrigger.batch('.reveal', {
+    start:'top 90%', once:true,
+    onEnter:batch => gsap.to(batch, { autoAlpha:1, y:0, duration:.8, stagger:.08, ease:'power3.out' }),
+  });
+
+  // Эхний дэлгэцийн intro (хуудас дээд хэсгээсээ ачаалагдсан үед л)
+  if (!introPlayed && window.scrollY < 5) {
+    introPlayed = true;
+    const cap0 = scenes[0].querySelector('.cap');
+    gsap.timeline({ delay:.1, defaults:{ ease:'power3.out' } })
+      .from(scenes[0].querySelector('picture'), { scale:1.15, duration:2.2, ease:'power2.out' }, 0)
+      .from(header, { autoAlpha:0, y:-20, duration:.8 }, .3)
+      .from(cap0.querySelector('.k'), { autoAlpha:0, y:20, duration:.7 }, .3)
+      .from(splits[0].words, { yPercent:115, duration:1, stagger:.08 }, .4)
+      .from(cap0.querySelector('p'), { autoAlpha:0, y:24, duration:.8 }, .75)
+      .from('.rail li:not(.line)', { autoAlpha:0, x:12, duration:.5, stagger:.05 }, .8)
+      .from('.scroll-hint', { autoAlpha:0, duration:.6 }, 1.1);
+  }
+  ready();
+
+  return () => {
+    smoother && smoother.kill();
+    smoother = null; tl = null;
+    splits.forEach(s => s.revert());
+    dims.forEach(d => d.remove());
+  };
+});
+});
+
+// Толгой хэсэг: цайвар хэсэг дээр ирэхэд бараан дэвсгэртэй болно (хоёр горимд хоёуланд)
+ScrollTrigger.create({
+  trigger:'#contact', start:'top 80px', refreshPriority:-1,
+  onToggle:self => header.classList.toggle('solid', self.isActive || self.progress === 1),
+  onLeave:() => header.classList.add('solid'),
+});
+})();
+</script>
+</body>
+</html>
